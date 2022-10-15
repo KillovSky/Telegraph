@@ -1,0 +1,28 @@
+[
+	{
+		"date": "14/10/2022 22:55:30",
+		"error": false,
+		"dev_msg": false,
+		"error_msg": false,
+		"code": 200,
+		"explain": {
+			"code": "OK",
+			"why": "The request is OK, this response depends on the HTTP method used."
+		},
+		"headers": {
+			"server": "nginx/1.20.1",
+			"date": "Sat, 15 Oct 2022 01:55:31 GMT",
+			"content-type": "application/json; charset=utf-8",
+			"content-length": "45",
+			"connection": "close",
+			"pragma": "no-cache",
+			"cache-control": "no-store",
+			"strict-transport-security": "max-age=31536000; includeSubDomains; preload"
+		},
+		"images": [
+			{
+				"src": "https://telegra.ph/file/a5f64ece2d0ab56eab3ce.png"
+			}
+		]
+	}
+]

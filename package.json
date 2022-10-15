@@ -1,0 +1,48 @@
+{
+  "name": "@killovsky/telegraph",
+  "version": "1.0.0",
+  "description": "Repositorio do modulo de upload de imagens no Telegraph.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KillovSky/Telegraph.git"
+  },
+  "keywords": [
+    "telegraph",
+    "image",
+    "upload",
+    "cloud",
+    "api",
+    "telegram",
+    "photo",
+    "server",
+    "api",
+    "unlimited"
+  ],
+  "author": "KillovSky",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/KillovSky/Telegraph/issues"
+  },
+  "homepage": "https://github.com/KillovSky/Telegraph#readme",
+  "dependencies": {
+    "form-data": "^4.0.0"
+  },
+  "funding": [
+    {
+      "type": "kofi",
+      "url": "http://ko-fi.com/killovsky"
+    },
+    {
+      "type": "paypal",
+      "url": "https://bit.ly/33QDaGa"
+    },
+    {
+      "type": "picpay",
+      "url": "https://picpay.me/userlucas123"
+    }
+  ]
+}
