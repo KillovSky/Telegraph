@@ -1,4 +1,4 @@
-<p align="center"><img src="https://telegra.ph/images/logo.png" width="150" height="150" alt="logo_telegraph.png"/></p>  
+<p align="center"><img src="https://telegra.ph/images/logo.png" width="180" height="180" alt="logo_telegraph.png"/></p>  
 <h5 align="center"><a href="https://telegra.ph">[Source: Telegraph]</a></h5>  
   
 ## Instalação:  
@@ -15,7 +15,7 @@ $ npm i
 ```  
   
 ## O que este módulo faz?  
-- Ele realiza o upload de fotos no sistema do [Telegraph](https://telegra.ph) de forma ilimitada e bem simples.  
+- Ele realiza o upload de fotos, vídeos e gifs no sistema do [Telegraph](https://telegra.ph) de forma ilimitada e bem simples.  
   
 ## O que este módulo tem de especial?  
 - Assim como o da [NASA](https://github.com/KillovSky/NASA), muitas coisas, confira abaixo:  
@@ -31,7 +31,9 @@ $ npm i
 >  
 > 5. Cada linha do código possui uma explicação do que está rodando ou vai rodar, ou seja, o código INTEIRO é explicado, linha por linha.   
 >  
-> 6. E muitas outras coisas, confira o código para entender!  
+> 6. O formato, caso incorreto, será automaticamente corrigido no upload, reduzindo a taxa de erros por formatos incorretos.  
+>  
+> 7. E muitas outras coisas, confira o código para entender!  
 ------  
   
 ## Como testar este módulo:  
@@ -56,10 +58,12 @@ upload('Imagem', 'Formato')
 * 1° - Imagem  
 * Valores: Buffer, Base64 ou Local  
 * Padrão: 'Image_Test'  
+* Formatos suportados: png, jpg, jpeg...  
+* ...gif, mp4, jfif, pjepg, pjp, m4v  
 * ---------------------------------------  
 * 2° - Formato  
 * Valores: Formato de Imagem  
-* Padrão: 'jpg'   
+* Padrão: 'default'   
 * ------------------------------------- */   
   
 // Function sem especificar [Modo Teste]  
@@ -73,6 +77,9 @@ http()
   
 // Retorna a package JSON  
 packages()  
+  
+// Retorna os formatos suportados  
+formats()  
 ```  
   
 </details>   
@@ -103,7 +110,7 @@ const data = await telegraph.upload('IMAGEM', 'FORMATO');
 ```javascript  
 // Código usando .then  
 const telegraph = require('@killovsky/telegraph');  
-telegraph.upload('Image_Test', 'jpg').then(data => console.log(data));  
+telegraph.upload('Image_Test', 'default').then(data => console.log(data));  
 ```  
   
 </details>  
@@ -114,7 +121,7 @@ telegraph.upload('Image_Test', 'jpg').then(data => console.log(data));
 ```javascript  
 // Código usando await   
 const telegraph = require('@killovsky/telegraph');  
-const data = await telegraph.upload('Image_Test', 'jpg');  
+const data = await telegraph.upload('Image_Test', 'default');  
 console.log(data);  
   
 // Se você não sabe criar uma função async ou ainda não tiver uma, use este código abaixo:  
@@ -134,6 +141,7 @@ console.log(data);
 	"error": "true | false",  
 	"dev_msg": "String / false | Mensagem adicional de erro",  
 	"error_msg": "String / false | Códigos de erros de execução",   
+	"format_msg": "String / false | Mensagem sobre os formatos",   
 	"code": "Number | String | Código de erro HTTP",  
 	"explain": {  
 		"code": "Number / String | Código escrito de HTTP",  
@@ -147,7 +155,8 @@ console.log(data);
 	},  
 	"images": [  
 		{  
-			"src": "String | URL da imagem que foi enviada ao Telegraph"  
+			"src": "String | URL da imagem que foi enviada ao Telegraph",  
+			"error": "false / String | Diz se ocorreu algum erro de servidor ou outro"  
 		}  
 	]  
 }  
@@ -164,6 +173,7 @@ console.log(data);
 	"error": false,  
 	"dev_msg": false,  
 	"error_msg": false,  
+	"format_msg": false,  
 	"code": 200,  
 	"explain": {  
 		"code": "OK",  
@@ -181,7 +191,8 @@ console.log(data);
 	},  
 	"images": [  
 		{  
-			"src": "https://telegra.ph/file/a5f64ece2d0ab56eab3ce.png"  
+			"src": "https://telegra.ph/file/a5f64ece2d0ab56eab3ce.png",  
+			"error": false  
 		}  
 	]  
 }  

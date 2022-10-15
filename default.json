@@ -4,6 +4,7 @@
 		"error": false,
 		"dev_msg": false,
 		"error_msg": false,
+		"format_msg": false,
 		"code": 200,
 		"explain": {
 			"code": "OK",
@@ -21,7 +22,8 @@
 		},
 		"images": [
 			{
-				"src": "https://telegra.ph/file/a5f64ece2d0ab56eab3ce.png"
+				"src": "https://telegra.ph/file/a5f64ece2d0ab56eab3ce.png",
+				"error": false
 			}
 		]
 	}

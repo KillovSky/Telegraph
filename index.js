@@ -44,10 +44,35 @@ const mopack = require("./package.json");
 #
 ######################################################################################*/
 
+/* Define os formatos aceitados */
+const Accepted_Formats = ["png", "jpg", "jpeg", "mp4", "gif", "jfif", "pjepg", "pjp", "m4v"];
+
+/* Verifica o formato utilizando as bytes de um buffer em modo Uint8Array */
+function File_Type(buf, deft) {
+    const File_Unit = (new Uint8Array(buf)).subarray(0, 4);
+    var File_Header = "";
+    for (let bbarr of File_Unit) {
+        File_Header += bbarr.toString(16);
+    }
+    if (["ffd8ffe0", "ffd8ffe1", "ffd8ffe2", "ffd8ffe3", "ffd8ffe8"].includes(File_Header)) {
+        return "jpg";
+    } else if (File_Header === "66747970") {
+        return "mp4";
+    } else if (File_Header === "47494638") {
+        return "gif";
+    } else if (File_Header === "89504e47") {
+        return "png";
+    } else if (File_Header.startsWith("0001c")) {
+        return "m4v";
+    } else {
+        return deft;
+    }
+}
+
 /* Cria a exports para atuar como função */
 exports.upload = function (
     image = "Image_Test",
-    format = "jpg"
+    filetp = "default"
 ) {
 
     /* Faz uma promise com a função para funcionar perfeitamente */
@@ -67,13 +92,38 @@ exports.upload = function (
 
         /* Verifica qual é o tipo da imagem | Buffer, Base64 ou Path */
         let Uploading_Image = false;
+        let format = filetp;
         if (Buffer.isBuffer(image)) {
             Uploading_Image = image;
         } else if (image.startsWith("data:")) {
-            const Extracted_Base64 = image.split(";base64,")[1];
-            Uploading_Image = Buffer.from(Extracted_Base64, "base64");
+            const Extracted_Base64 = image.split(";base64,");
+            Uploading_Image = Buffer.from(Extracted_Base64[1], "base64");
+            format = Extracted_Base64.replace(/data:image\//gi, "") || filetp;
         } else if (fs.existsSync(image)) {
             Uploading_Image = fs.readFileSync(image);
+            format = image.split(".").pop() || filetp;
+        }
+
+        /* Volta a mimetype ao especificado pelo usuário, caso não tenha sido detectado adequadamente */
+        if (!Accepted_Formats.includes(format)) {
+            format = filetp;
+        }
+
+        /* Caso tenha sido informado um formato incorreto / foi usado o formato de nome */
+        if (format !== filetp) {
+            response.format_msg = `A format was detected in the name, base64 or buffer, the upload will be done using the format '${format}' instead of '${filetp}'.`;
+        }
+
+        /* Faz a correção do mime-type caso seja outro */
+        const Temp_Format = File_Type(Uploading_Image, format);
+        if (format === "default" && Temp_Format === "default") {
+            response.format_msg = "Could not detect the image format, so it will be sent as 'jpg', if you get errors try specifying manually.";
+            format = "jpg";
+        } else if (format !== Temp_Format || format === "default" || !Accepted_Formats.includes(format)) {
+            response.format_msg = `The image format does not appear to be '${format}', the upload will be in the format '${Temp_Format}' instead of '${format}'.`;
+            format = Temp_Format;
+        } else if (format === Temp_Format && format !== "default") {
+            format = Temp_Format;
         }
 
         /* Caso a imagem fornecida seja invalida */
@@ -81,7 +131,7 @@ exports.upload = function (
             response.error = true;
             response.code = "415";
             response.explain = httpcodes[response.code];
-            response.dev_msg = "This is not a valid image, please insert a type of Buffer, Base64 or Path.";
+            response.dev_msg = "The file could not be detected, please try loading other media or check your media before trying again.";
             response.error_msg = "This is not a valid image, please insert a type of Buffer, Base64 or Image Path.";
             response.images = "https://http.cat/415.jpg";
             return resolve(response);
@@ -159,7 +209,10 @@ exports.upload = function (
 
                         /* Corrige os links da resposta, verifica se foi erro e tem um try-catch para verificar novamente, caso não for válido */
                         if (Object.keys(Telegraph).includes("error")) {
-                            response.images = "https://http.dog/400.jpg";
+                            response.images = {
+                                "src": "https://http.dog/415.jpg",
+                                "error": Telegraph.error
+                            };
                         } else {
                             Telegraph = Telegraph.map(function (res) {
                                 try {
@@ -170,6 +223,25 @@ exports.upload = function (
                                     }
                                 } catch (err) {
                                     response.dev_msg += ` | ${err}`;
+                                }
+                            });
+
+                            /* Formata para uma array padrão e faz flat para não dificultar mais */
+                            Telegraph = (Telegraph.map(function (link) {
+                                return [
+                                    {
+                                        "src": link
+                                    }
+                                ];
+                            })).flat();
+
+                            /* Caso não tenha dado erro, insere um erro com valor false para checagens */
+                            Telegraph = Telegraph.map(function (res) {
+                                if (!Object.keys(res).includes("error")) {
+                                    res.error = false;
+                                    return res;
+                                } else {
+                                    return res;
                                 }
                             });
 
@@ -214,3 +286,6 @@ exports.http = () => httpcodes;
 
 /* Retorna a package.json */
 exports.packages = () => mopack;
+
+/* Retorna os formatos aceitados */
+exports.formats = () => Accepted_Formats;
